@@ -3,7 +3,7 @@
 # Project Flow
 
 Game/
-├── .godot/
+├── .godot/ \n
 
 ├── build/   # ntv libraries
 
