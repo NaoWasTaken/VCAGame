@@ -3,6 +3,7 @@ import random
 from characters.mage import Mage # Will import all later, testing everything now as mage
 from core.dungeon import Dungeon
 from characters.enemies import Enemy
+from core.projectile import Projectile
 
 class Game:
     def __init__(self, screen):
@@ -16,6 +17,7 @@ class Game:
         self.player.rect.topleft = (self.player_start_x, self.player_start_y)
         self.enemies = []  # List of enemies
         self.spawn_enemies(3) # Can add spawn logic later
+        self.projectiles = pygame.sprite.Group() # Sprites for projectiles
 
     def find_spawn_location(self): # Necessary, otherwise player can spawn in walls LOL
         center_x = self.dungeon.width_tiles // 2
@@ -67,7 +69,18 @@ class Game:
                 self.player.cast_healthspell()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                self.player.basic_attack(self.player)
+                target_x, target_y = pygame.mouse.get_pos()
+                projectile = Projectile(
+                    self.player.rect.centerx,  # Start from player's center
+                    self.player.rect.centery,
+                    target_x,
+                    target_y,
+                    10,  # Test damage
+                    self.player,
+                    self.dungeon
+                )
+                self.projectiles.add(projectile)  # Add to the sprite group
+                #self.player.basic_attack(self.player) # Removed basic attack.
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -122,6 +135,16 @@ class Game:
             enemy.update(self.player, self.dungeon, self.enemies)
 
         player.update_cooldowns()
+        self.projectiles.update()  # Update all projectiles
+
+        # Projectile-enemy collision detection
+        for projectile in self.projectiles:
+            collisions = pygame.sprite.spritecollide(projectile, self.enemies, False) # dokill=False
+            for enemy in collisions:
+                enemy.take_damage(projectile.damage)
+                projectile.kill()  # Remove projectile after collision
+
+        self.enemies = [enemy for enemy in self.enemies if enemy.health > 0]
 
     def render(self):
         # Draw everything on the screen
@@ -131,5 +154,6 @@ class Game:
         self.player.draw(self.screen) # Draw player
         for enemy in self.enemies: # Draw enemies
             enemy.draw(self.screen)
+        self.projectiles.draw(self.screen)
 
         pygame.display.flip() #Display Update

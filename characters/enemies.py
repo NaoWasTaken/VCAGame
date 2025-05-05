@@ -1,6 +1,7 @@
 import pygame
 from characters.character import Character
 import random
+import math
 
 class Enemy(Character):
     def __init__(self, x, y):
@@ -9,6 +10,8 @@ class Enemy(Character):
         self.movement_timer = 0
         self.movement_interval = random.randint(30, 90)  # Moves every x frames
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1), (0, 0)]) # Initial random direction
+        self.health = 30  # Initial health
+        self.max_health = 30 # Store max health
 
     def update(self, player, dungeon, enemies):
         direction_x = player.rect.x - self.rect.x
@@ -57,7 +60,19 @@ class Enemy(Character):
             if other_enemy != self and self.rect.colliderect(other_enemy.rect):
                 return True
         return False
+    
+    def draw(self, surface): # Make this better with Chara's art
+           pygame.draw.rect(surface, (255,0,0), self.rect)
+           # draw health bar
+           health_bar_width = (self.health / self.max_health) * self.rect.width
+           pygame.draw.rect(surface, (0,255,0), (self.rect.x, self.rect.y - 5, health_bar_width, 5))
 
     def attack(self, target):
         print(f"{self.name} attacks {target.name}!")
         # Add attack logic here
+
+    def take_damage(self, damage):
+           self.health -= damage
+           if self.health <= 0:
+               self.kill()  # Remove the enemy
+               print("Enemy died!")
