@@ -1,5 +1,0 @@
-C:/Users/Avi/Desktop/VCAGame/build/CMakeFiles/godot_vc_game.dir
-C:/Users/Avi/Desktop/VCAGame/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/Avi/Desktop/VCAGame/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/Avi/Desktop/VCAGame/build/godot-cpp/CMakeFiles/godot-cpp.dir
-C:/Users/Avi/Desktop/VCAGame/build/godot-cpp/CMakeFiles/ALL_BUILD.dir

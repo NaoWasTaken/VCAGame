@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Users/Avi/Desktop/VCAGame/build/cmake_install.cmake",
-		"C:/Users/Avi/Desktop/VCAGame/build/godot-cpp/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
