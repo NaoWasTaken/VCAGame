@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\ability.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\big_pet_summon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\clone_summon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\fairy_pet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\knockback_arrow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\landmines.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\ogre_pet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\piercing_arrow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\poison_bomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\rapid_fire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\ricochet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\smoke_bomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\bleed_detonate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\death_mark.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\decoy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\fury_leap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\shadow_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\sharp_blade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\soul_suck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\stealth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\throwing_knives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\explosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\fireball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\health_spell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\ice_spike.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\lightning_cast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\teleport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\time_stop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\void_hole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\wall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\characters\archer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\characters\assassin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\characters\character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\characters\mage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Avi\Desktop\VCAGame\native\map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\ability.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\big_pet_summon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\clone_summon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\fairy_pet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\knockback_arrow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\landmines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\ogre_pet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\piercing_arrow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\poison_bomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\rapid_fire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\ricochet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\archer\smoke_bomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\bleed_detonate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\death_mark.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\decoy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\fury_leap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\shadow_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\sharp_blade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\soul_suck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\stealth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\assassin\throwing_knives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\explosion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\fireball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\health_spell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\ice_spike.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\lighting_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\teleport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\time_stop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\void_hole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\abilities\mage\wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\characters\archer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\characters\assassin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\characters\character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\characters\mage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Avi\Desktop\VCAGame\native\map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Avi\Desktop\VCAGame\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0AFA305E-BF28-3A2B-B208-95DEDDE4C20C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2645DAF3-8749-3528-B5DD-14A4637FE53C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
