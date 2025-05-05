@@ -10,19 +10,58 @@ class Enemy(Character):
         self.movement_interval = random.randint(30, 90)  # Moves every x frames
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1), (0, 0)]) # Initial random direction
 
-    def update(self, player):
-        # Get the direction vector towards the player
+    def update(self, player, dungeon, enemies):
         direction_x = player.rect.x - self.rect.x
         direction_y = player.rect.y - self.rect.y
-
-        # Normalize the direction vector (get a unit vector)
         distance = (direction_x**2 + direction_y**2)**0.5
         if distance > 0:
             direction_x /= distance
             direction_y /= distance
 
-        # Move towards the player
-        self.move(direction_x, direction_y)
+        original_x = self.rect.x
+        original_y = self.rect.y
+
+        # Collision logic (with self and dungeon obstacles)
+
+        self.rect.x += direction_x * self.speed
+        collision = False
+        for y in range(dungeon.height_tiles):
+            for x in range(dungeon.width_tiles):
+                if dungeon.tiles[y][x] == 1:
+                    wall_rect = pygame.Rect(x * dungeon.tile_size, y * dungeon.tile_size, dungeon.tile_size, dungeon.tile_size)
+                    if self.rect.colliderect(wall_rect):
+                        collision = True
+                        break
+            if collision:
+                break
+        if not collision:
+            for other_enemy in enemies:
+                if other_enemy != self and self.rect.colliderect(other_enemy.rect):
+                    collision = True
+                    break
+
+        if collision:
+            self.rect.x = original_x
+
+        self.rect.y += direction_y * self.speed
+        collision = False
+        for y in range(dungeon.height_tiles):
+            for x in range(dungeon.width_tiles):
+                if dungeon.tiles[y][x] == 1:
+                    wall_rect = pygame.Rect(x * dungeon.tile_size, y * dungeon.tile_size, dungeon.tile_size, dungeon.tile_size)
+                    if self.rect.colliderect(wall_rect):
+                        collision = True
+                        break
+            if collision:
+                break
+        if not collision:
+            for other_enemy in enemies:
+                if other_enemy != self and self.rect.colliderect(other_enemy.rect):
+                    collision = True
+                    break
+
+        if collision:
+            self.rect.y = original_y
 
     def attack(self, target):
         print(f"{self.name} attacks {target.name}!")

@@ -46,11 +46,10 @@ class Game:
         while attempts < max_attempts:
             random_x_tile = random.randint(0, self.dungeon.width_tiles - 1)
             random_y_tile = random.randint(0, self.dungeon.height_tiles - 1)
-            if self.dungeon.tiles[random_y_tile][random_x_tile] == 0:  # It's a floor tile
+            if self.dungeon.tiles[random_y_tile][random_x_tile] == 0:  # Checks for floor tile
                 spawn_x = random_x_tile * self.dungeon.tile_size
                 spawn_y = random_y_tile * self.dungeon.tile_size
-                # Check if the spawn location is too close to the player (optional)
-                if pygame.math.Vector2(spawn_x, spawn_y).distance_to(self.player.rect.topleft) > self.tile_size * 3:
+                if pygame.math.Vector2(spawn_x, spawn_y).distance_to(self.player.rect.topleft) > self.tile_size * 3: # Makes sure enemy doesn't spawn on top of player
                     return spawn_x, spawn_y
             attempts += 1
         return None, None # Failed to find a valid spawn location
@@ -81,32 +80,39 @@ class Game:
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             dy = player.speed
 
-        # Player collision detection (same as before)
-        if dx != 0:
-            player.rect.x += dx
-            for y in range(dungeon.height_tiles):
-                for x in range(dungeon.width_tiles):
-                    if dungeon.tiles[y][x] == 1:
-                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                        if player.rect.colliderect(wall_rect):
-                            if dx > 0:
-                                player.rect.right = wall_rect.left
-                            elif dx < 0:
-                                player.rect.left = wall_rect.right
-        if dy != 0:
-            player.rect.y += dy
-            for y in range(dungeon.height_tiles):
-                for x in range(dungeon.width_tiles):
-                    if dungeon.tiles[y][x] == 1:
-                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                        if player.rect.colliderect(wall_rect):
-                            if dy > 0:
-                                player.rect.bottom = wall_rect.top
-                            elif dy < 0:
-                                player.rect.top = wall_rect.bottom
+        # Player collision detection
+        player.rect.x += dx
+        for y in range(dungeon.height_tiles):
+            for x in range(dungeon.width_tiles):
+                if dungeon.tiles[y][x] == 1:
+                    wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                    if player.rect.colliderect(wall_rect):
+                        if dx > 0:
+                            player.rect.right = wall_rect.left
+                        elif dx < 0:
+                            player.rect.left = wall_rect.right
+                        break
+            else:
+                continue
+            break
+
+        player.rect.y += dy
+        for y in range(dungeon.height_tiles):
+            for x in range(dungeon.width_tiles):
+                if dungeon.tiles[y][x] == 1:
+                    wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                    if player.rect.colliderect(wall_rect):
+                        if dy > 0:
+                            player.rect.bottom = wall_rect.top
+                        elif dy < 0:
+                            player.rect.top = wall_rect.bottom
+                        break
+            else:
+                continue
+            break
 
         for enemy in self.enemies:
-            enemy.update(self.player)
+            enemy.update(self.player, self.dungeon, self.enemies)
 
         player.update_cooldowns()
 
