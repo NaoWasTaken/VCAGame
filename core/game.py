@@ -1,6 +1,8 @@
 import pygame
+import random
 from characters.mage import Mage # Will import all later, testing everything now as mage
 from core.dungeon import Dungeon
+from characters.enemies import Enemy
 
 class Game:
     def __init__(self, screen):
@@ -12,6 +14,8 @@ class Game:
         self.player = Mage(0, 0) # Initialize player with a default position first, otherwise find_spawn_location breaks T-T
         self.player_start_x, self.player_start_y = self.find_spawn_location()
         self.player.rect.topleft = (self.player_start_x, self.player_start_y)
+        self.enemies = []  # List of enemies
+        self.spawn_enemies(3) # Can add spawn logic later
 
     def find_spawn_location(self): # Necessary, otherwise player can spawn in walls LOL
         center_x = self.dungeon.width_tiles // 2
@@ -29,6 +33,27 @@ class Game:
             if search_radius > max(self.dungeon.width_tiles, self.dungeon.height_tiles):
                 break  # Prevents infinite loops later on
         return self.screen.get_width() // 2 - self.tile_size // 2, self.screen.get_height() // 2 - self.tile_size // 2
+    
+    def spawn_enemies(self, num_enemies):
+        for _ in range(num_enemies):
+            spawn_x, spawn_y = self.find_valid_spawn_location()
+            if spawn_x is not None and spawn_y is not None:
+                self.enemies.append(Enemy(spawn_x, spawn_y))
+
+    def find_valid_spawn_location(self): # Enemy spawns
+        attempts = 0
+        max_attempts = 100  # Prevent infinite loops
+        while attempts < max_attempts:
+            random_x_tile = random.randint(0, self.dungeon.width_tiles - 1)
+            random_y_tile = random.randint(0, self.dungeon.height_tiles - 1)
+            if self.dungeon.tiles[random_y_tile][random_x_tile] == 0:  # It's a floor tile
+                spawn_x = random_x_tile * self.dungeon.tile_size
+                spawn_y = random_y_tile * self.dungeon.tile_size
+                # Check if the spawn location is too close to the player (optional)
+                if pygame.math.Vector2(spawn_x, spawn_y).distance_to(self.player.rect.topleft) > self.tile_size * 3:
+                    return spawn_x, spawn_y
+            attempts += 1
+        return None, None # Failed to find a valid spawn location
 
     def handle_input(self, event):
         # Check if player quits
@@ -56,7 +81,7 @@ class Game:
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             dy = player.speed
 
-        # Move along x-axis and check for collision
+        # Player collision detection (same as before)
         if dx != 0:
             player.rect.x += dx
             for y in range(dungeon.height_tiles):
@@ -68,8 +93,6 @@ class Game:
                                 player.rect.right = wall_rect.left
                             elif dx < 0:
                                 player.rect.left = wall_rect.right
-
-        # Move along y-axis and check for collision
         if dy != 0:
             player.rect.y += dy
             for y in range(dungeon.height_tiles):
@@ -82,6 +105,9 @@ class Game:
                             elif dy < 0:
                                 player.rect.top = wall_rect.bottom
 
+        for enemy in self.enemies:
+            enemy.update(self.player)
+
         player.update_cooldowns()
 
     def render(self):
@@ -90,5 +116,7 @@ class Game:
         # Draw game elements here
         self.dungeon.draw(self.screen) # Draw Dungeon (Important that this is first)
         self.player.draw(self.screen) # Draw player
+        for enemy in self.enemies: # Draw enemies
+            enemy.draw(self.screen)
 
         pygame.display.flip() #Display Update
