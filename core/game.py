@@ -7,9 +7,28 @@ class Game:
         self.screen = screen
         self.running = True
         # We will initialize game state and objects here
-        self.player = Mage(screen.get_width() // 2 - 16, screen.get_height() // 2 - 16)
-        self.tile_size = 32  # Keep this consistent with Dungeon
+        self.tile_size = 32
         self.dungeon = Dungeon(screen.get_width(), screen.get_height(), self.tile_size)
+        self.player = Mage(0, 0) # Initialize player with a default position first, otherwise find_spawn_location breaks T-T
+        self.player_start_x, self.player_start_y = self.find_spawn_location()
+        self.player.rect.topleft = (self.player_start_x, self.player_start_y)
+
+    def find_spawn_location(self): # Necessary, otherwise player can spawn in walls LOL
+        center_x = self.dungeon.width_tiles // 2
+        center_y = self.dungeon.height_tiles // 2
+        search_radius = 0
+
+        while True:
+            for i in range(max(0, center_y - search_radius), min(self.dungeon.height_tiles, center_y + search_radius + 1)):
+                for j in range(max(0, center_x - search_radius), min(self.dungeon.width_tiles, center_x + search_radius + 1)):
+                    if self.dungeon.tiles[i][j] == 0:
+                        spawn_x = j * self.dungeon.tile_size
+                        spawn_y = i * self.dungeon.tile_size
+                        return spawn_x, spawn_y
+            search_radius += 1
+            if search_radius > max(self.dungeon.width_tiles, self.dungeon.height_tiles):
+                break  # Prevents infinite loops later on
+        return self.screen.get_width() // 2 - self.tile_size // 2, self.screen.get_height() // 2 - self.tile_size // 2
 
     def handle_input(self, event):
         # Check if player quits
@@ -20,29 +39,50 @@ class Game:
                 self.running = False
 
     def update(self):
-        # Gets pressed keys
         keys = pygame.key.get_pressed()
+        player = self.player
+        dungeon = self.dungeon
+        tile_size = dungeon.tile_size
 
-        # Movement
+        dx = 0
+        dy = 0
+
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.player.move(-1, 0)
+            dx = -player.speed
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.player.move(1, 0)
+            dx = player.speed
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.player.move(0, -1)
+            dy = -player.speed
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.player.move(0, 1)
+            dy = player.speed
 
-        # Abilities
-        if keys[pygame.K_z]:
-            self.player.cast_fireball(self.player)
-        if keys[pygame.K_x]:
-            self.player.cast_healthspell()
+        # Move along x-axis and check for collision
+        if dx != 0:
+            player.rect.x += dx
+            for y in range(dungeon.height_tiles):
+                for x in range(dungeon.width_tiles):
+                    if dungeon.tiles[y][x] == 1:
+                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                        if player.rect.colliderect(wall_rect):
+                            if dx > 0:
+                                player.rect.right = wall_rect.left
+                            elif dx < 0:
+                                player.rect.left = wall_rect.right
 
-        self.player.update_cooldowns()
+        # Move along y-axis and check for collision
+        if dy != 0:
+            player.rect.y += dy
+            for y in range(dungeon.height_tiles):
+                for x in range(dungeon.width_tiles):
+                    if dungeon.tiles[y][x] == 1:
+                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                        if player.rect.colliderect(wall_rect):
+                            if dy > 0:
+                                player.rect.bottom = wall_rect.top
+                            elif dy < 0:
+                                player.rect.top = wall_rect.bottom
 
-        # Update cooldowns
-        self.player.update_cooldowns()
+        player.update_cooldowns()
 
     def render(self):
         # Draw everything on the screen
