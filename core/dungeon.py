@@ -1,4 +1,3 @@
-# core/dungeon.py
 import pygame
 
 class Dungeon:
