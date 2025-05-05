@@ -2,7 +2,7 @@
 
 ## Goals
 ### Characters
-* 3 Characters (Male - Female - Androgynous) - 3 Classes (Mage - Warrior - Assassin)
+* 3 Characters (Male - Female - Androgynous) - 3 Classes (Mage - Archer - Assassin)
 * All 3 Classes have basic attack
 * Mage Abilities - Base (Fireball, Health Spell) - Obtainable (Void Hole, Lightning Cast, Wall, Teleport, Ice Spike) - Ultimates [Charges] (Map Wipe Explosion, Time Stop{gives increased ability damage in duration})
 * Archer Abilities - Base (Piercing Arrow{does more damage if charged}, Smoke Bomb) - Obtainable (Ricochet, Rapid Fire, Fairy Pet, Ogre Pet, Knockback Arrow, Poison Bomb, Landmines) - Ultimes [Charges] (Big Pet Summon, Cloning{2 scaling to 4})
