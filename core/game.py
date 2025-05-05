@@ -1,19 +1,22 @@
 import pygame
 from characters.mage import Mage # Will import all later, testing everything now as mage
+from core.dungeon import Dungeon
 
 class Game:
     def __init__(self, screen):
         self.screen = screen
         self.running = True
-        self.player = Mage(screen.get_width() // 2 - 16, screen.get_height() // 2 - 16) # Starting as mage to test
         # We will initialize game state and objects here
+        self.player = Mage(screen.get_width() // 2 - 16, screen.get_height() // 2 - 16)
+        self.tile_size = 32  # Keep this consistent with Dungeon
+        self.dungeon = Dungeon(screen.get_width(), screen.get_height(), self.tile_size)
 
     def handle_input(self, event):
-        # These are examples, process events like key presses and mouse clicks
+        # Check if player quits
         if event.type == pygame.QUIT:
             self.running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_q: # push q to quit for now
                 self.running = False
 
     def update(self):
@@ -44,8 +47,8 @@ class Game:
     def render(self):
         # Draw everything on the screen
         self.screen.fill((0, 0, 0))  # Clear screen
-        self.player.draw(self.screen) # Draw player
         # Draw game elements here
-
+        self.dungeon.draw(self.screen) # Draw Dungeon (Important that this is first)
+        self.player.draw(self.screen) # Draw player
 
         pygame.display.flip() #Display Update
