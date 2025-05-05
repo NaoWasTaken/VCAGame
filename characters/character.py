@@ -7,7 +7,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.health = 100 # Base health, we can replace later with whatever we want
-        self.speed = 5 # Base Movement speed, again can rework later
+        self.speed = 2 # Base Movement speed, again can rework later
         self.cooldowns = {}
 
     def move(self, dx, dy):
