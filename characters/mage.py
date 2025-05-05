@@ -6,7 +6,7 @@ class Mage(Character):
 
     def cast_fireball(self, target):
         fireball_name = "fireball"
-        cooldown_duration = 15 # Change if we want shorter or longer cd
+        cooldown_duration = 900 # Change if we want shorter or longer cd
 
         if not self.is_on_cooldown(fireball_name):
             print(f"{self.name} casts Fireball on {target.name}!") # Placeholder for fireball logic
@@ -17,7 +17,7 @@ class Mage(Character):
 
     def cast_healthspell(self):
         heal_name = "heal"  # Corrected line: Assign "heal" to heal_name
-        cooldown_duration = 30 # Change to whatever
+        cooldown_duration = 1800 # Change to whatever
 
         if not self.is_on_cooldown(heal_name):
             heal_amount = 20 # Change if we want more or less healing

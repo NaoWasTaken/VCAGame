@@ -9,6 +9,7 @@ class Character(pygame.sprite.Sprite):
         self.health = 100 # Base health, we can replace later with whatever we want
         self.speed = 2 # Base Movement speed, again can rework later
         self.cooldowns = {}
+        self.basic_attack_damage = 5
 
     def move(self, dx, dy):
         self.rect.x += dx * self.speed
@@ -16,6 +17,7 @@ class Character(pygame.sprite.Sprite):
 
     def take_damage(self, damage):
         self.health -= damage
+        print(f"{self.name} took {damage} damage!")
         if self.health <= 0:
             self.kill() # Add actual death logic before this, this just removes the character
 
@@ -24,6 +26,10 @@ class Character(pygame.sprite.Sprite):
 
     def is_on_cooldown(self, ability_name):
         return ability_name in self.cooldowns and self.cooldowns[ability_name] > 0
+
+    def basic_attack(self, target):
+        print(f"{self.name} performs a basic attack on {target.name} for {self.basic_attack_damage} damage!")
+        target.take_damage(self.basic_attack_damage)
     
     def update_cooldowns(self):
         for ability in list(self.cooldowns.keys()):

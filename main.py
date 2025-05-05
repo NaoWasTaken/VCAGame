@@ -18,14 +18,17 @@ pygame.display.set_caption("My Roguelike Game")
 game = Game(screen)
 
 running = True
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         game.handle_input(event)
+        if not game.running:
+            running = False
 
     game.update()
     game.render()
+
+pygame.quit()
 
 pygame.quit()

@@ -59,8 +59,15 @@ class Game:
         if event.type == pygame.QUIT:
             self.running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q: # push q to quit for now
+            if event.key == pygame.K_ESCAPE:
                 self.running = False
+            if event.key == pygame.K_z:
+                self.player.cast_fireball(self.player)
+            if event.key == pygame.K_x:
+                self.player.cast_healthspell()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                self.player.basic_attack(self.player)
 
     def update(self):
         keys = pygame.key.get_pressed()
