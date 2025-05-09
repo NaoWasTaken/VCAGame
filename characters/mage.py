@@ -1,29 +1,82 @@
 from characters.character import Character
+from abilities.mage_ability import FireballAbility, HealthSpellAbility
+import pygame
 
 class Mage(Character):
     def __init__(self, x, y):
         super().__init__("Mage", x, y, 32, 32, (128, 0, 128)) # Size (Color)
+        self.abilities = {}  # To store instances of known ability objects
+        self.unlocked_abilities = [] #Store usable abilities
+        self._learn_initial_abilities()
 
-    def cast_fireball(self, target):
-        fireball_name = "fireball"
-        cooldown_duration = 900 # Change if we want shorter or longer cd
+    def _learn_initial_abilities(self):
+        self.learn_ability(FireballAbility())
+        self.learn_ability(HealthSpellAbility())
 
-        if not self.is_on_cooldown(fireball_name):
-            print(f"{self.name} casts Fireball on {target.name}!") # Placeholder for fireball logic
-            self.start_cooldown(fireball_name, cooldown_duration)
+    def learn_ability(self, ability_instance):
+        # Adds ability instance
+        if ability_instance.name in self.abilities:
+            print(f"{self.name} already knows {ability_instance.name}.")
+            return
+
+        self.abilities[ability_instance.name] = ability_instance
+        print(f"{self.name} learned {ability_instance.name}!")
+
+        if ability_instance.name not in self.unlocked_abilities:
+            self.unlocked_abilities.append(ability_instance.name)
+
+    def use_ability(self, ability_name, target=None, game_context=None):
+        # Attempts to use ability name
+        if ability_name in self.unlocked_abilities and ability_name in self.abilities:
+            ability = self.abilities[ability_name]
+            #Check cooldowns
+            if ability.is_usable(self):
+                ability.activate(self, target=target, game_context=game_context)
+        elif ability_name not in self.abilities:
+            print(f"Ability '{ability_name}' is unknown.")
+        else: # Known but not unlocked
+            print(f"Ability '{ability_name}' is not unlocked.")
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect)
+
+        if self.max_health > 0:
+            health_percentage = self.health / self.max_health
         else:
-            print("Ability is on cooldown")
-            pass # Cooldown visual logic
+            health_percentage = 0
 
-    def cast_healthspell(self):
-        heal_name = "heal"  # Corrected line: Assign "heal" to heal_name
-        cooldown_duration = 1800 # Change to whatever
+        bar_height = 7
+        bar_y_offset = 10
 
-        if not self.is_on_cooldown(heal_name):
-            heal_amount = 20 # Change if we want more or less healing
-            self.health += heal_amount
-            print(f"{self.name} casts Health Spell and heals for {heal_amount}.") # Placeholder for heal visual logic
-            self.start_cooldown(heal_name, cooldown_duration)
+        background_bar_x = self.rect.x
+        background_bar_y = self.rect.y - bar_y_offset
+        background_bar_width = self.rect.width
+        background_bar_height = bar_height
+        
+        background_bar_rect = pygame.Rect(
+            background_bar_x, 
+            background_bar_y, 
+            background_bar_width, 
+            background_bar_height
+        )
+
+        current_health_width = background_bar_width * health_percentage
+        health_fill_rect = pygame.Rect(
+            background_bar_x, 
+            background_bar_y, 
+            current_health_width, 
+            background_bar_height
+        )
+
+        background_color = (50, 50, 50)
+        if health_percentage < 0.3:
+            health_color = (255, 0, 0)
+        elif health_percentage < 0.6:
+            health_color = (255, 255, 0)
         else:
-            print("Ability is on cooldown")
-            pass # Cooldown visual logic
+            health_color = (0, 255, 0)
+
+        # Draw the health bar
+        pygame.draw.rect(surface, background_color, background_bar_rect)
+        if current_health_width > 0:
+             pygame.draw.rect(surface, health_color, health_fill_rect)

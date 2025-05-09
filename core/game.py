@@ -69,9 +69,17 @@ class Game:
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_z:
-                self.player.cast_fireball(self.player)
+                mouse_position = pygame.mouse.get_pos() 
+                self.player.use_ability(
+                    ability_name="fireball",
+                    target=mouse_position,
+                    game_context=self
+                )
             if event.key == pygame.K_x:
-                self.player.cast_healthspell()
+                self.player.use_ability(
+                        ability_name="heal",
+                        game_context=self
+                    )
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 target_x, target_y = pygame.mouse.get_pos()
