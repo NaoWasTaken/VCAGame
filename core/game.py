@@ -18,6 +18,7 @@ class Game:
         self.enemies = []  # List of enemies
         self.spawn_enemies(3) # Can add spawn logic later
         self.projectiles = pygame.sprite.Group() # Sprites for projectiles
+        self.player_damage_cooldown = 0
 
     def find_spawn_location(self): # Necessary, otherwise player can spawn in walls LOL
         center_x = self.dungeon.width_tiles // 2
@@ -63,6 +64,10 @@ class Game:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.running = False
+        if not self.player.alive:
+            return # Don't process further input if player is not alive
+        
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_z:
                 self.player.cast_fireball(self.player)
             if event.key == pygame.K_x:
@@ -80,7 +85,6 @@ class Game:
                     self.dungeon
                 )
                 self.projectiles.add(projectile)  # Add to the sprite group
-                #self.player.basic_attack(self.player) # Removed basic attack.
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -88,55 +92,56 @@ class Game:
         dungeon = self.dungeon
         tile_size = dungeon.tile_size
 
-        dx = 0
-        dy = 0
-        
-        left = keys[pygame.K_a] or keys[pygame.K_LEFT]
-        right = keys[pygame.K_d] or keys[pygame.K_RIGHT]
-        up = keys[pygame.K_w] or keys[pygame.K_UP]
-        down = keys[pygame.K_s] or keys[pygame.K_DOWN]
-        
-        # using Vector2 to get proportional diagonal movement
-        direction = pygame.math.Vector2(right - left, down - up)
-        if direction.length_squared() > 0: # check if movement occurs
-            direction.scale_to_length(player.speed)
-            dx, dy = direction
+        if self.player.alive:
+            dx = 0
+            dy = 0
+            
+            left = keys[pygame.K_a] or keys[pygame.K_LEFT]
+            right = keys[pygame.K_d] or keys[pygame.K_RIGHT]
+            up = keys[pygame.K_w] or keys[pygame.K_UP]
+            down = keys[pygame.K_s] or keys[pygame.K_DOWN]
+            
+            # using Vector2 to get proportional diagonal movement
+            direction = pygame.math.Vector2(right - left, down - up)
+            if direction.length_squared() > 0: # check if movement occurs
+                direction.scale_to_length(player.speed)
+                dx, dy = direction
 
-        # Player collision detection
-        player.rect.x += dx
-        for y in range(dungeon.height_tiles):
-            for x in range(dungeon.width_tiles):
-                if dungeon.tiles[y][x] == 1:
-                    wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                    if player.rect.colliderect(wall_rect):
-                        if dx > 0:
-                            player.rect.right = wall_rect.left
-                        elif dx < 0:
-                            player.rect.left = wall_rect.right
-                        break
-            else:
-                continue
-            break
+            # Player collision detection
+            player.rect.x += dx
+            for y in range(dungeon.height_tiles):
+                for x in range(dungeon.width_tiles):
+                    if dungeon.tiles[y][x] == 1:
+                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                        if player.rect.colliderect(wall_rect):
+                            if dx > 0:
+                                player.rect.right = wall_rect.left
+                            elif dx < 0:
+                                player.rect.left = wall_rect.right
+                            break
+                else:
+                    continue
+                break
 
-        player.rect.y += dy
-        for y in range(dungeon.height_tiles):
-            for x in range(dungeon.width_tiles):
-                if dungeon.tiles[y][x] == 1:
-                    wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                    if player.rect.colliderect(wall_rect):
-                        if dy > 0:
-                            player.rect.bottom = wall_rect.top
-                        elif dy < 0:
-                            player.rect.top = wall_rect.bottom
-                        break
-            else:
-                continue
-            break
+            player.rect.y += dy
+            for y in range(dungeon.height_tiles):
+                for x in range(dungeon.width_tiles):
+                    if dungeon.tiles[y][x] == 1:
+                        wall_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                        if player.rect.colliderect(wall_rect):
+                            if dy > 0:
+                                player.rect.bottom = wall_rect.top
+                            elif dy < 0:
+                                player.rect.top = wall_rect.bottom
+                            break
+                else:
+                    continue
+                break
 
-        for enemy in self.enemies:
-            enemy.update(self.player, self.dungeon, self.enemies)
+            for enemy in self.enemies:
+                enemy.update(self.player, self.dungeon, self.enemies)
 
-        player.update_cooldowns()
+            player.update_cooldowns()
         self.projectiles.update()  # Update all projectiles
 
         # Projectile-enemy collision detection
@@ -148,12 +153,27 @@ class Game:
 
         self.enemies = [enemy for enemy in self.enemies if enemy.health > 0]
 
+        if player.alive: # Added check
+            if self.player_damage_cooldown <= 0:
+                for enemy in self.enemies: # Iterate through alive enemies
+                    if player.rect.colliderect(enemy.rect):
+                        player.take_damage(enemy.damage)
+                        self.player_damage_cooldown = 50
+                        if not player.alive: # If player died from this hit
+                            print("GAME OVER - Mage has been defeated.")
+                            # Further game over logic,
+                        break
+
+        if self.player_damage_cooldown > 0:
+            self.player_damage_cooldown -= 1
+
     def render(self):
         # Draw everything on the screen
         self.screen.fill((0, 0, 0))  # Clear screen
         # Draw game elements here
         self.dungeon.draw(self.screen) # Draw Dungeon (Important that this is first)
-        self.player.draw(self.screen) # Draw player
+        if self.player.alive:
+            self.player.draw(self.screen) # Draw player
         for enemy in self.enemies: # Draw enemies
             enemy.draw(self.screen)
         self.projectiles.draw(self.screen)

@@ -12,6 +12,9 @@ class Enemy(Character):
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1), (0, 0)]) # Initial random direction
         self.health = 30  # Initial health
         self.max_health = 30 # Store max health
+        self.damage = 10  #Enemy damage value
+        self.target_x = None
+        self.target_y = None
 
     def update(self, player, dungeon, enemies):
         direction_x = player.rect.x - self.rect.x
@@ -72,7 +75,10 @@ class Enemy(Character):
         # Add attack logic here
 
     def take_damage(self, damage):
-           self.health -= damage
-           if self.health <= 0:
-               self.kill()  # Remove the enemy
-               print("Enemy died!")
+        self.health -= damage
+        print(f"{self.name} took {damage} damage!")
+        if self.health <= 0:
+            self.health = 0 # Prevent negative health display
+            self.kill()
+            self.alive = False
+            print(f"{self.name} has died!")

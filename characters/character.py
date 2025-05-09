@@ -10,6 +10,7 @@ class Character(pygame.sprite.Sprite):
         self.speed = 3 # Base Movement speed, again can rework later
         self.cooldowns = {}
         self.basic_attack_damage = 5
+        self.alive = True
 
     def move(self, dx, dy):
         self.rect.x += dx * self.speed
@@ -19,7 +20,10 @@ class Character(pygame.sprite.Sprite):
         self.health -= damage
         print(f"{self.name} took {damage} damage!")
         if self.health <= 0:
+            self.health = 0
             self.kill() # Add actual death logic before this, this just removes the character
+            self.alive = False
+            print(f"{self.name} has died!")
 
     def start_cooldown(self, ability_name, duration):
         self.cooldowns[ability_name] = duration
