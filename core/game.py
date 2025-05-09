@@ -16,7 +16,7 @@ class Game:
         self.player_start_x, self.player_start_y = self.find_spawn_location()
         self.player.rect.topleft = (self.player_start_x, self.player_start_y)
         self.enemies = []  # List of enemies
-        self.spawn_enemies(3) # Can add spawn logic later
+        self.spawn_enemies(5) # Can add spawn logic later
         self.projectiles = pygame.sprite.Group() # Sprites for projectiles
         self.player_damage_cooldown = 0
         self.active_aoe_effects = pygame.sprite.Group() # Void hole

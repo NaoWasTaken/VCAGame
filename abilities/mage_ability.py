@@ -58,13 +58,13 @@ class HealthSpellAbility(Ability):
 class VoidHoleAbility(Ability):
     def __init__(self):
         super().__init__(name="void_hole", cooldown_duration=1800)
-        self.projectile_lifetime_seconds = 8
-        self.projectile_pull_radius = 160
+        self.projectile_lifetime_seconds = 10
+        self.projectile_pull_radius = 800
         self.projectile_damage_radius = 60
         self.projectile_dps = 20
-        self.projectile_pull_strength = 1.2
-        self.projectile_travel_speed = 7 
-        self.projectile_max_travel_range = 400
+        self.projectile_pull_strength = 1.5
+        self.projectile_travel_speed = 4 
+        self.projectile_max_travel_range = 700
 
     def activate(self, caster, target=None, game_context=None):
         target_mouse_pos = target
