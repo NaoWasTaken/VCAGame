@@ -90,15 +90,17 @@ class Game:
 
         dx = 0
         dy = 0
-
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            dx = -player.speed
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            dx = player.speed
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            dy = -player.speed
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            dy = player.speed
+        
+        left = keys[pygame.K_a] or keys[pygame.K_LEFT]
+        right = keys[pygame.K_d] or keys[pygame.K_RIGHT]
+        up = keys[pygame.K_w] or keys[pygame.K_UP]
+        down = keys[pygame.K_s] or keys[pygame.K_DOWN]
+        
+        # using Vector2 to get proportional diagonal movement
+        direction = pygame.math.Vector2(right - left, down - up)
+        if direction.length_squared() > 0: # check if movement occurs
+            direction.scale_to_length(player.speed)
+            dx, dy = direction
 
         # Player collision detection
         player.rect.x += dx
