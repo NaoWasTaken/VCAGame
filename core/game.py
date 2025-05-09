@@ -19,6 +19,7 @@ class Game:
         self.spawn_enemies(3) # Can add spawn logic later
         self.projectiles = pygame.sprite.Group() # Sprites for projectiles
         self.player_damage_cooldown = 0
+        self.active_aoe_effects = pygame.sprite.Group() # Void hole
 
     def find_spawn_location(self): # Necessary, otherwise player can spawn in walls LOL
         center_x = self.dungeon.width_tiles // 2
@@ -80,6 +81,13 @@ class Game:
                         ability_name="heal",
                         game_context=self
                     )
+            if event.key == pygame.K_c:
+                mouse_position = pygame.mouse.get_pos()
+                self.player.use_ability(
+                    ability_name="void_hole",
+                    target=mouse_position,
+                    game_context=self
+                )
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 target_x, target_y = pygame.mouse.get_pos()
@@ -150,7 +158,18 @@ class Game:
                 enemy.update(self.player, self.dungeon, self.enemies)
 
             player.update_cooldowns()
+
         self.projectiles.update()  # Update all projectiles
+
+        for effect in list(self.active_aoe_effects):
+            if hasattr(effect, 'is_active') and not effect.is_active:
+                effect.kill()
+            elif hasattr(effect, 'update'):
+                effect.update(self.enemies, self.dungeon.tiles, self.dungeon.tile_size) 
+
+        for enemy in self.enemies:
+            if enemy.alive:
+                enemy.update(self.player, self.dungeon, self.enemies)
 
         # Projectile-enemy collision detection
         for projectile in self.projectiles:
@@ -185,5 +204,6 @@ class Game:
         for enemy in self.enemies: # Draw enemies
             enemy.draw(self.screen)
         self.projectiles.draw(self.screen)
+        self.active_aoe_effects.draw(self.screen)
 
         pygame.display.flip() #Display Update

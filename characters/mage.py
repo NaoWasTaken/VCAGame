@@ -1,5 +1,5 @@
 from characters.character import Character
-from abilities.mage_ability import FireballAbility, HealthSpellAbility
+from abilities.mage_ability import FireballAbility, HealthSpellAbility, VoidHoleAbility
 import pygame
 
 class Mage(Character):
@@ -12,6 +12,8 @@ class Mage(Character):
     def _learn_initial_abilities(self):
         self.learn_ability(FireballAbility())
         self.learn_ability(HealthSpellAbility())
+        # EVERYTHING UNDER HERE GETS DELETED THIS IS FOR TESTING ONLY
+        self.learn_ability(VoidHoleAbility())
 
     def learn_ability(self, ability_instance):
         # Adds ability instance
