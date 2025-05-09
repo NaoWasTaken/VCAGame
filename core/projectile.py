@@ -184,3 +184,68 @@ class VoidHoleProjectile(pygame.sprite.Sprite):
             s_damage = pygame.Surface((self.damage_radius * 2, self.damage_radius * 2), pygame.SRCALPHA)
             pygame.draw.circle(s_damage, (200, 0, 0, 80), (self.damage_radius, self.damage_radius), self.damage_radius)
             surface.blit(s_damage, (self.rect.centerx - self.damage_radius, self.rect.centery - self.damage_radius))
+
+class FireballProjectile(pygame.sprite.Sprite):
+    def __init__(self, x, y, target_x, target_y, damage, owner, dungeon,
+                 aoe_radius=200, aoe_damage_factor=0.5):
+        super().__init__()
+        self.image = pygame.Surface((20, 20))
+        self.image.fill((255, 100, 0))
+        self.rect = self.image.get_rect(center=(x,y))
+        
+        self.pos = pygame.math.Vector2(x, y)
+
+        self.damage = damage
+        self.owner = owner
+        self.dungeon = dungeon
+
+        self.aoe_radius = aoe_radius
+        self.aoe_damage = int(damage * aoe_damage_factor)
+
+        dx = target_x - self.pos.x
+        dy = target_y - self.pos.y
+        distance = math.sqrt(dx**2 + dy**2)
+        
+        self.speed = 5
+        if distance > 0:
+            self.velocity = pygame.math.Vector2(dx / distance * self.speed, dy / distance * self.speed)
+        else:
+            self.velocity = pygame.math.Vector2(0, 0)
+
+    def update(self):
+        self.pos += self.velocity
+        self.rect.center = round(self.pos.x), round(self.pos.y)
+
+        tile_x_center = self.rect.centerx // self.dungeon.tile_size
+        tile_y_center = self.rect.centery // self.dungeon.tile_size
+
+        if not (0 <= tile_x_center < self.dungeon.width_tiles and \
+                0 <= tile_y_center < self.dungeon.height_tiles):
+            self.kill()
+            return
+
+        if self.dungeon.tiles[tile_y_center][tile_x_center] == 1:
+            print(f"Fireball hit wall at {self.rect.center}")
+            self.is_exploding_on_impact = True
+            self.kill() 
+            return
+
+        screen_rect = pygame.display.get_surface().get_rect()
+        if not screen_rect.colliderect(self.rect):
+            self.is_exploding_on_impact = False
+            self.kill()
+
+    def explode(self, all_enemies_list, impact_position):
+        print(f"Fireball exploding at {impact_position} with AoE radius {self.aoe_radius} for {self.aoe_damage} damage.")
+        aoe_hit_count = 0
+        for enemy in all_enemies_list:
+            if not enemy.alive:
+                continue
+
+            distance = pygame.math.Vector2(impact_position).distance_to(enemy.rect.center)
+            if distance < self.aoe_radius:
+                print(f"  AoE hit: {enemy.name} at distance {distance:.2f}")
+                enemy.take_damage(self.aoe_damage)
+                aoe_hit_count +=1
+        if aoe_hit_count > 0:
+            print(f"  AoE hit {aoe_hit_count} additional targets.")

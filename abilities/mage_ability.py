@@ -1,15 +1,17 @@
 from abilities.ability import Ability
 from core.projectile import Projectile
-from core.projectile import VoidHoleProjectile
+from core.projectile import VoidHoleProjectile, FireballProjectile
 import pygame 
 
 class FireballAbility(Ability):
     def __init__(self):
-        super().__init__(name="fireball", cooldown_duration=900) # 15 Seconds
-        self.damage = 30  # Example damage for the fireball
+        super().__init__(name="fireball", cooldown_duration=900)
+        self.damage = 30
+        self.aoe_radius = 120
+        self.aoe_damage_factor = 0.8
 
     def activate(self, caster, target=None, game_context=None):
-        target_position = target # Assuming target passed is the position
+        target_position = target
 
         if not target_position:
             print(f"{self.name}: Requires a target position to be cast.")
@@ -21,19 +23,19 @@ class FireballAbility(Ability):
             
         print(f"{caster.name} casts Fireball towards {target_position}!")
         
-        # Create and launch the projectile
-        projectile = Projectile(
-            caster.rect.centerx,
-            caster.rect.centery,
-            target_position[0],
-            target_position[1],
-            self.damage,
-            caster,
-            game_context.dungeon
+        fireball_projectile = FireballProjectile(
+            x=caster.rect.centerx,
+            y=caster.rect.centery,
+            target_x=target_position[0],
+            target_y=target_position[1],
+            damage=self.damage,
+            owner=caster,
+            dungeon=game_context.dungeon,
+            aoe_radius=self.aoe_radius,
+            aoe_damage_factor=self.aoe_damage_factor
         )
 
-        game_context.projectiles.add(projectile) # Add to the games projectile group
-
+        game_context.projectiles.add(fireball_projectile)
         self.start_caster_cooldown(caster)
 
 class HealthSpellAbility(Ability):
@@ -59,10 +61,10 @@ class VoidHoleAbility(Ability):
     def __init__(self):
         super().__init__(name="void_hole", cooldown_duration=1800)
         self.projectile_lifetime_seconds = 10
-        self.projectile_pull_radius = 800
+        self.projectile_pull_radius = 500
         self.projectile_damage_radius = 60
         self.projectile_dps = 20
-        self.projectile_pull_strength = 1.5
+        self.projectile_pull_strength = 1.2
         self.projectile_travel_speed = 4 
         self.projectile_max_travel_range = 700
 
