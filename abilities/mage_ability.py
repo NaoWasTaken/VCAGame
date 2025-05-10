@@ -1,6 +1,6 @@
 from abilities.ability import Ability
 from core.projectile import Projectile
-from core.projectile import VoidHoleProjectile, FireballProjectile
+from core.projectile import VoidHoleProjectile, FireballProjectile, LightningProjectile
 import pygame 
 
 class FireballAbility(Ability):
@@ -98,3 +98,48 @@ class VoidHoleAbility(Ability):
         game_context.active_aoe_effects.add(void_hole_projectile)
 
         self.start_caster_cooldown(caster)
+
+class LightningStormAbility(Ability):
+    def __init__(self):
+        super().__init__(name="lightning_storm", cooldown_duration=300) # 5 seconds (for testing)
+        self.damage = 10
+        self.stun_duration_frames = 120 # 2 seconds
+        self.arc_range = 2000 # Pixels
+        self.max_arcs = 4 
+
+    def activate(self, caster, target=None, game_context=None):
+        target_position = target
+
+        if not target_position:
+            print(f"{self.name}: Requires a target position to be cast.")
+            return
+
+        if not game_context or \
+           not hasattr(game_context, 'projectiles') or \
+           not hasattr(game_context, 'dungeon') or \
+           not hasattr(game_context, 'enemies'):
+            print(f"{self.name}: Requires a valid game context (with projectiles, dungeon, enemies) to operate.")
+            return
+            
+        print(f"{caster.name} casts Lightning Storm towards {target_position}!")
+        
+        # Initial lightning projectile
+        lightning_bolt = LightningProjectile(
+            x=caster.rect.centerx,
+            y=caster.rect.centery,
+            target_x=target_position[0],
+            target_y=target_position[1],
+            damage=self.damage,
+            owner=caster,
+            dungeon=game_context.dungeon,
+            game_context=game_context, 
+            stun_duration_frames=self.stun_duration_frames,
+            arc_range=self.arc_range,
+            max_arcs=self.max_arcs,
+            current_arc_count=0,
+            hit_in_chain=set() 
+        )
+
+        game_context.projectiles.add(lightning_bolt)
+        self.start_caster_cooldown(caster)
+

@@ -1,6 +1,11 @@
 import pygame
 import math
 
+LIGHTNING_COLOR = (173, 216, 230)
+LIGHTNING_WIDTH = 8
+LIGHTNING_LENGTH = 15
+LIGHTNING_SPEED = 7
+
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, x, y, target_x, target_y, damage, owner, dungeon):
         super().__init__()
@@ -249,3 +254,172 @@ class FireballProjectile(pygame.sprite.Sprite):
                 aoe_hit_count +=1
         if aoe_hit_count > 0:
             print(f"  AoE hit {aoe_hit_count} additional targets.")
+
+class LightningProjectile(pygame.sprite.Sprite):
+    def __init__(self, x, y, target_x, target_y, damage, owner, dungeon, game_context,
+                 stun_duration_frames, arc_range, max_arcs,
+                 current_arc_count=0, hit_in_chain=None, speed=LIGHTNING_SPEED):
+        super().__init__()
+        self.owner = owner
+        self.dungeon = dungeon
+        self.game_context = game_context 
+        self.damage = damage
+        self.stun_duration_frames = stun_duration_frames
+        self.arc_range = arc_range
+        self.max_arcs = max_arcs
+        self.current_arc_count = current_arc_count
+        self.speed = speed
+
+        if hit_in_chain is None:
+            self.hit_in_chain = set()
+        else:
+            self.hit_in_chain = hit_in_chain
+
+        # Visuals
+        self.image = pygame.Surface((LIGHTNING_LENGTH, LIGHTNING_WIDTH), pygame.SRCALPHA)
+        self.image.fill(LIGHTNING_COLOR) 
+        self.original_image = self.image.copy() 
+        self.rect = self.image.get_rect(center=(x, y))
+        
+        self.pos = pygame.math.Vector2(x, y)
+        
+        direction = pygame.math.Vector2(target_x - x, target_y - y)
+        if direction.length_squared() > 0:
+            self.velocity = direction.normalize() * self.speed
+        else:
+            self.velocity = pygame.math.Vector2(0, 0)
+            print("DEBUG: LightningProjectile created with zero velocity, killing.")
+            self.kill() 
+
+        if self.velocity.length_squared() > 0:
+            angle = self.velocity.angle_to(pygame.math.Vector2(1, 0)) 
+            self.image = pygame.transform.rotate(self.original_image, -angle) 
+            self.rect = self.image.get_rect(center=self.rect.center)
+        
+        print(f"DEBUG: LightningProjectile CREATED. Arc: {self.current_arc_count}, Target: ({target_x},{target_y}), Vel: {self.velocity}, hit_in_chain: {self.hit_in_chain}")
+
+
+    def update(self):
+        if not self.alive(): return 
+
+        self.pos += self.velocity
+        self.rect.center = round(self.pos.x), round(self.pos.y)
+
+        tile_x_center = self.rect.centerx // self.dungeon.tile_size
+        tile_y_center = self.rect.centery // self.dungeon.tile_size
+
+        if not (0 <= tile_x_center < self.dungeon.width_tiles and \
+                0 <= tile_y_center < self.dungeon.height_tiles):
+            print(f"DEBUG: LightningProjectile off dungeon grid at {self.rect.center}, killing.")
+            self.kill()
+            return
+
+        if self.dungeon.tiles[tile_y_center][tile_x_center] == 1:
+            print(f"DEBUG: LightningProjectile hit wall at {self.rect.center}, killing.")
+            self.kill() 
+            return
+
+        screen_rect = pygame.display.get_surface().get_rect()
+        if not screen_rect.colliderect(self.rect):
+            print(f"DEBUG: LightningProjectile off screen at {self.rect.center}, killing.")
+            self.kill()
+            return
+
+        for enemy in self.game_context.enemies:
+            if not enemy.alive or not hasattr(enemy, 'id') or not hasattr(enemy, 'apply_stun'):
+                continue 
+
+            if self.rect.colliderect(enemy.rect) and enemy.id not in self.hit_in_chain:
+                print(f"DEBUG: LightningProjectile attempting to handle_impact with Enemy ID: {enemy.id}")
+                self.handle_impact(enemy)
+                return
+
+    def handle_impact(self, enemy):
+        print(f"DEBUG: LightningProjectile IMPACT with {enemy.name if hasattr(enemy, 'name') else 'enemy'} (ID: {enemy.id}). Arc: {self.current_arc_count + 1}/{self.max_arcs + 1}")
+
+        print(f"DEBUG: Applying {self.damage} damage to Enemy ID: {enemy.id}")
+        enemy.take_damage(self.damage)
+
+        if hasattr(enemy, 'apply_stun'):
+             enemy.apply_stun(self.stun_duration_frames, is_lightning_stun=True)
+        else:
+            print(f"Warning: Enemy ID {enemy.id} does not have apply_stun method.")
+        
+        current_enemy_id = enemy.id
+        self.hit_in_chain.add(current_enemy_id)
+        print(f"DEBUG: Added Enemy ID {current_enemy_id} to hit_in_chain. Chain: {self.hit_in_chain}")
+
+
+        # 3. Attempt to arc
+        if self.current_arc_count < self.max_arcs:
+            print(f"DEBUG: Attempting arc {self.current_arc_count + 1}. Max arcs: {self.max_arcs}")
+            next_target = self.find_next_arc_target(enemy.rect.center)
+            if next_target:
+                print(f"DEBUG: Found next arc target: {next_target.name if hasattr(next_target, 'name') else 'enemy'} (ID: {next_target.id})")
+                arc_projectile = LightningProjectile(
+                    x=enemy.rect.centerx,
+                    y=enemy.rect.centery,
+                    target_x=next_target.rect.centerx,
+                    target_y=next_target.rect.centery,
+                    damage=self.damage,
+                    owner=self.owner,
+                    dungeon=self.dungeon,
+                    game_context=self.game_context,
+                    stun_duration_frames=self.stun_duration_frames,
+                    arc_range=self.arc_range,
+                    max_arcs=self.max_arcs,
+                    current_arc_count=self.current_arc_count + 1,
+                    hit_in_chain=self.hit_in_chain.copy()
+                )
+                self.game_context.projectiles.add(arc_projectile)
+                print(f"DEBUG: Added arc projectile to group. Projectiles in group: {len(self.game_context.projectiles)}")
+            else:
+                print(f"DEBUG: No valid arc target found from Enemy ID {current_enemy_id}.")
+        else:
+            print(f"DEBUG: Max arcs reached ({self.current_arc_count +1 } / {self.max_arcs + 1}). No more arcing.")
+        
+        print(f"DEBUG: LightningProjectile (Arc {self.current_arc_count}) being killed after impact/arc attempt.")
+        self.kill()
+
+    def find_next_arc_target(self, current_enemy_pos_tuple):
+        current_enemy_pos = pygame.math.Vector2(current_enemy_pos_tuple)
+        closest_enemy = None
+        min_distance_sq = self.arc_range ** 2 
+        
+        print(f"DEBUG find_next_arc_target: Center: {current_enemy_pos}, Arc Range (sq): {min_distance_sq}, Hit in this chain: {self.hit_in_chain}")
+
+        if not hasattr(self.game_context, 'enemies') or self.game_context.enemies is None:
+            print("DEBUG find_next_arc_target: game_context.enemies is missing or None.")
+            return None
+
+        for potential_target in self.game_context.enemies:
+            if not hasattr(potential_target, 'id') or not hasattr(potential_target, 'rect') or not hasattr(potential_target, 'alive'):
+                print(f"DEBUG find_next_arc_target: Skipping potential target due to missing attributes: {potential_target}")
+                continue
+
+            print(f"DEBUG find_next_arc_target: Checking Enemy ID {potential_target.id}. Alive: {potential_target.alive}. In chain: {potential_target.id in self.hit_in_chain}.")
+            
+            if not potential_target.alive:
+                print(f"DEBUG find_next_arc_target: Enemy ID {potential_target.id} is not alive.")
+                continue
+            if potential_target.id in self.hit_in_chain:
+                print(f"DEBUG find_next_arc_target: Enemy ID {potential_target.id} already in hit_in_chain.")
+                continue
+
+            target_pos = pygame.math.Vector2(potential_target.rect.center)
+            distance_sq = current_enemy_pos.distance_squared_to(target_pos)
+            print(f"DEBUG find_next_arc_target: Enemy ID {potential_target.id} at {target_pos}, dist_sq: {distance_sq}")
+
+            if distance_sq < min_distance_sq:
+                min_distance_sq = distance_sq
+                closest_enemy = potential_target
+                print(f"DEBUG find_next_arc_target: New closest_enemy: ID {closest_enemy.id}, dist_sq: {min_distance_sq}")
+        
+        if closest_enemy:
+            print(f"DEBUG find_next_arc_target: Selected arc target: ID {closest_enemy.id}")
+        else:
+            print("DEBUG find_next_arc_target: No suitable arc target found.")
+        return closest_enemy
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
