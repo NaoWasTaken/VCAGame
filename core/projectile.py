@@ -207,6 +207,8 @@ class FireballProjectile(pygame.sprite.Sprite):
         self.aoe_radius = aoe_radius
         self.aoe_damage = int(damage * aoe_damage_factor)
 
+        self.is_exploding_on_impact = False
+
         dx = target_x - self.pos.x
         dy = target_y - self.pos.y
         distance = math.sqrt(dx**2 + dy**2)
