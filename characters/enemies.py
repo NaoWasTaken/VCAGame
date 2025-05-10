@@ -113,32 +113,23 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y = original_rect_y
 
     def check_collision(self, dungeon, all_enemies_list):
-        """
-        Checks for collision with walls and other enemies.
-        - dungeon: The dungeon object.
-        - all_enemies_list: List of all other enemies.
-        """
-        # Wall collision (more efficient to check nearby tiles, but using existing logic for now)
-        # Consider optimizing this if performance becomes an issue.
         for y_tile in range(dungeon.height_tiles):
             for x_tile in range(dungeon.width_tiles):
-                if dungeon.tiles[y_tile][x_tile] == 1: # If it's a wall tile
+                if dungeon.tiles[y_tile][x_tile] == 1:
                     wall_rect = pygame.Rect(x_tile * dungeon.tile_size, 
                                             y_tile * dungeon.tile_size, 
                                             dungeon.tile_size, 
                                             dungeon.tile_size)
                     if self.rect.colliderect(wall_rect):
-                        return True # Collision with a wall detected
-        
-        # Collision with other enemies
+                        return True
+
         for other_enemy in all_enemies_list:
-            if other_enemy is not self and other_enemy.alive: # Don't check against self, only alive enemies
+            if other_enemy is not self and other_enemy.alive:
                 if self.rect.colliderect(other_enemy.rect):
-                    return True # Collision with another enemy detected
-        return False # No collision detected
+                    return True
+        return False
 
     def take_damage(self, amount):
-        """Applies damage to the enemy and handles death."""
         if not self.alive:
             return
             
@@ -146,30 +137,24 @@ class Enemy(pygame.sprite.Sprite):
         print(f"DEBUG: {self.name} took {amount} damage! Health: {self.health}/{self.max_health}")
         
         if self.health <= 0:
-            self.health = 0 # Prevent negative health
+            self.health = 0
             self.alive = False
             print(f"DEBUG: {self.name} has died!")
-            self.kill() # Crucial: Removes sprite from all Pygame groups it's in
+            self.kill()
 
     def draw(self, surface):
-        """Draws the enemy and its health bar to the given surface."""
         if self.alive:
-            # CORRECTED: Draw self.image, which will be the original or the stun-outlined version
             surface.blit(self.image, self.rect)
-            
-            # Draw health bar above the enemy
-            if self.health < self.max_health: # Optionally, only show if not at full health
-                # Health bar dimensions and position
+
+            if self.health < self.max_health:
                 bar_width_เต็ม = self.rect.width 
                 bar_current_width = int(bar_width_เต็ม * (self.health / self.max_health))
                 
                 bar_pos_x = self.rect.left
-                bar_pos_y = self.rect.top - HEALTH_BAR_Y_OFFSET # Position above the enemy
-                
-                # Background of health bar (e.g., dark red for missing health portion)
+                bar_pos_y = self.rect.top - HEALTH_BAR_Y_OFFSET
+
                 pygame.draw.rect(surface, (100, 0, 0), 
                                  (bar_pos_x, bar_pos_y, bar_width_เต็ม, HEALTH_BAR_HEIGHT))
-                # Foreground of health bar (green for current health)
                 if bar_current_width > 0:
                     pygame.draw.rect(surface, (0, 200, 0), 
                                      (bar_pos_x, bar_pos_y, bar_current_width, HEALTH_BAR_HEIGHT))
