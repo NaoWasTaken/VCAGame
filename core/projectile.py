@@ -38,7 +38,7 @@ class Projectile(pygame.sprite.Sprite):
         tile_y = self.rect.y // self.dungeon.tile_size
 
         if 0 <= tile_x < self.dungeon.width_tiles and 0 <= tile_y < self.dungeon.height_tiles:
-            if self.dungeon.tiles[tile_y][tile_x] == 1: #Checks for wall
+            if self.dungeon.tiles[tile_y][tile_x] == 0: #Checks for wall
                 self.kill()
                 return
 
@@ -130,7 +130,7 @@ class VoidHoleProjectile(pygame.sprite.Sprite):
 
             for r_idx, row in enumerate(dungeon_tiles):
                 for c_idx, tile_val in enumerate(row):
-                    if tile_val == 1:
+                    if tile_val == 0:
                         wall_rect = pygame.Rect(c_idx * tile_size, r_idx * tile_size, tile_size, tile_size)
                         if self.rect.colliderect(wall_rect):
                             self._transition_to_active_phase()
@@ -231,7 +231,7 @@ class FireballProjectile(pygame.sprite.Sprite):
             self.kill()
             return
 
-        if self.dungeon.tiles[tile_y_center][tile_x_center] == 1:
+        if self.dungeon.tiles[tile_y_center][tile_x_center] == 0:
             print(f"Fireball hit wall at {self.rect.center}")
             self.is_exploding_on_impact = True
             self.kill() 
@@ -316,7 +316,7 @@ class LightningProjectile(pygame.sprite.Sprite):
             self.kill()
             return
 
-        if self.dungeon.tiles[tile_y_center][tile_x_center] == 1:
+        if self.dungeon.tiles[tile_y_center][tile_x_center] == 0:
             print(f"DEBUG: LightningProjectile hit wall at {self.rect.center}, killing.")
             self.kill() 
             return

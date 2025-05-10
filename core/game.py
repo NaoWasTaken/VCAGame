@@ -51,7 +51,7 @@ class Game:
 
                     if 0 <= check_y_tile < self.dungeon.height_tiles and \
                        0 <= check_x_tile < self.dungeon.width_tiles:
-                        if self.dungeon.tiles[check_y_tile][check_x_tile] == 0: 
+                        if self.dungeon.tiles[check_y_tile][check_x_tile] == 1: 
                             return check_x_tile * self.dungeon.tile_size, check_y_tile * self.dungeon.tile_size
             
             search_radius += 1
@@ -77,7 +77,7 @@ class Game:
             random_x_tile = random.randint(0, self.dungeon.width_tiles - 1)
             random_y_tile = random.randint(0, self.dungeon.height_tiles - 1)
             
-            if self.dungeon.tiles[random_y_tile][random_x_tile] == 0: 
+            if self.dungeon.tiles[random_y_tile][random_x_tile] == 1: 
                 spawn_x = random_x_tile * self.dungeon.tile_size
                 spawn_y = random_y_tile * self.dungeon.tile_size
                 
@@ -150,7 +150,7 @@ class Game:
             self.player.rect.x += dx
             for y_tile in range(self.dungeon.height_tiles):
                 for x_tile in range(self.dungeon.width_tiles):
-                    if self.dungeon.tiles[y_tile][x_tile] == 1:
+                    if self.dungeon.tiles[y_tile][x_tile] == 0:
                         wall_rect = pygame.Rect(x_tile * self.tile_size, y_tile * self.tile_size, self.tile_size, self.tile_size)
                         if self.player.rect.colliderect(wall_rect):
                             if dx > 0:
@@ -165,7 +165,7 @@ class Game:
             self.player.rect.y += dy
             for y_tile in range(self.dungeon.height_tiles):
                 for x_tile in range(self.dungeon.width_tiles):
-                    if self.dungeon.tiles[y_tile][x_tile] == 1:
+                    if self.dungeon.tiles[y_tile][x_tile] == 0:
                         wall_rect = pygame.Rect(x_tile * self.tile_size, y_tile * self.tile_size, self.tile_size, self.tile_size)
                         if self.player.rect.colliderect(wall_rect):
                             if dy > 0:

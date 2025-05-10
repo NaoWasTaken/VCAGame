@@ -18,9 +18,9 @@ class Dungeon:
                 # Simple hardcode
                 if x == 0 or x == self.width_tiles - 1 or y == 0 or y == self.height_tiles - 1 or \
                    (x > self.width_tiles // 4 and x < 3 * self.width_tiles // 4 and y == self.height_tiles // 2):
-                    row.append(1)  # Wall
+                    row.append(0)  # Wall
                 else:
-                    row.append(0)  # Floor
+                    row.append(1)  # Floor
             layout.append(row)
         return layout
 
@@ -28,7 +28,7 @@ class Dungeon:
         for y, row in enumerate(self.tiles):
             for x, tile in enumerate(row):
                 tile_rect = pygame.Rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size)
-                if tile == 1:  # Wall
+                if tile == 0:  # Wall
                     pygame.draw.rect(surface, (100, 100, 100), tile_rect)
-                elif tile == 0:  # Floor
+                elif tile == 1:  # Floor
                     pygame.draw.rect(surface, (50, 50, 50), tile_rect)
