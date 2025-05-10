@@ -105,7 +105,7 @@ class LightningStormAbility(Ability):
         self.damage = 10
         self.stun_duration_frames = 120 # 2 seconds
         self.arc_range = 2000 # Pixels
-        self.max_arcs = 4 
+        self.max_arcs = 3
 
     def activate(self, caster, target=None, game_context=None):
         target_position = target

@@ -23,7 +23,7 @@ class Game:
         # Initialize enemies
         self.enemies = []
         self.next_enemy_id = 0 
-        self.spawn_enemies(5) 
+        self.spawn_enemies(100) 
         
         # Projectile and effects groups
         self.projectiles = pygame.sprite.Group() 
